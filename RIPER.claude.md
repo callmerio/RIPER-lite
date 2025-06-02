@@ -103,18 +103,26 @@ mode_switch(a→b) → backup() → verify_complete(a) → set_mode(b) → log()
 verify_complete(mode) → 检查任务完成状态 → 警告未完成项 → 技术原则遵循检查
 
 # ✦ 7. MCP 工具集
-M₁ `interactive_feedback` **【强制执行】**
+M₁ `mcp-feedback-enhanced` **【强制执行】**
   ▹ **触发条件**：阶段性完成,执行检查点,审查结束,对话收尾,需求不明
-  ▹ **执行流程**： 
-    1. 输出汇总`interactive_feedback_summary`
-    2. 立即调用interactive_feedback工具
+  ▹ **执行流程**：
+    1. 输出汇总`mcp-feedback-enhanced_summary`
+    2. 立即调用mcp-feedback-enhanced工具
     3. 解析用户反馈并智能选择下一步行动：
        - 继续当前模式剩余任务
        - 切换到新模式
        - 深入当前任务
        - 结束对话
     4. 根据选择继续执行对应的模式任务
-  `interactive_feedback_summary`汇总模板: 当前状态 | 已完成工作 | 进度摘要 | 问题阻塞 | 用户决策点 | 建议选项 | 推荐行动
+  `mcp-feedback-enhanced_summary`汇总模板: 当前状态 | 已完成工作 | 进度摘要 | 问题阻塞 | 用户决策点 | 建议选项 | 推荐行动
+
+  ▹ **MCP Interactive Feedback 执行规范**：
+    1. 在任何过程、任务或对话中，无论是询问、响应还是完成阶段任务，都必须调用 MCP mcp-feedback-enhanced
+    2. 接收用户反馈时，如果反馈内容不为空，必须再次调用 MCP mcp-feedback-enhanced 并根据反馈调整行为
+    3. 只有当用户明确表示"结束"或"不需要更多交互"时，才能停止调用 MCP mcp-feedback-enhanced，此时流程完成
+    4. 除非接收到结束命令，否则所有步骤都必须重复调用 MCP mcp-feedback-enhanced
+
+
 
 M2 `context7-mcp` — 交叉引用与历史上下文 (限项目文档)
 M3 `sequential-thinking` — 复杂问题分解 (仅逻辑推理)
@@ -148,7 +156,7 @@ S1未启动 → S2初始化 → S3开发 → S4维护
 ## 输出格式
 [MODE: 当前模式][MODEL: 模型名] → 🧐 推断用户意图与触发模式的映射
 {对话内容 语言:zh-CN}
-对话内容末尾 调用M1 `interactive_feedback` 执行流程 
+对话内容末尾 调用M1 `mcp-feedback-enhanced` 执行流程 
 
 ## 执行循环
 do {
@@ -158,8 +166,7 @@ do {
   for 角色 in 当前模式.核心参与角色:
     [角色]: {生成该角色视角的响应，体现技术专业化}
   [🎉 综合]: {生成综合结论，确保技术原则遵循}
-  调用M1 interactive_feedback 执行流程 
-  如果用户输入 = "" 则结束循环 
+  调用M1 mcp-feedback-enhanced 执行流程 
 } while (true)
 
 # ✦ 11. 系统运行协议
