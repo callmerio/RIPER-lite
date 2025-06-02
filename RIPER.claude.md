@@ -5,7 +5,7 @@ alwaysApply: true
 ---
 
 # RIPER Lite
-
+version = "1.0.3"
 lang = "zh-CN"
 symbols = {
   "📂": "主目录",
@@ -142,30 +142,40 @@ T 任务集 = [
 # ✦ 8. MCP 工具集
 M₁ `interactive_feedback` **【强制执行】**
   ▹ **必须立即触发(trigger)**：包含提问,阶段性完成,执行检查点,审查结束,对话收尾,需求不明
-  ▹ **完整执行流程**：
-    1. 检测触发条件 → 2. 输出汇总 → 3. **立即调用工具** → 4. 验证调用成功
+  while continue of response:
+    if end of response:
+      `interactive_feedback_flow`
+    if trigger:
+      `interactive_feedback_flow`
+    if user_input = "":
+      end response
+
+  ▹ **完整执行流程 `interactive_feedback_flow`**：
+    1. 检测触发条件 → 2. 输出汇总`interactive_feedback_summary` → 3. **立即调用工具** → 4. 验证调用成功
     → 5. **解析用户反馈** → 6. **智能选择下一模式** → 7. **继续执行**
-  ▹ 调用前**必须**输出汇总：
-    ```
-    当前状态: <简述>
-    ❓ASK / 📋TODO / ➡️NEXT / ✅DONE / ❌BLOCKED
-    Suggest Answer: 1) … 2) … 3) …
-    ```
-  ▹ **强制调用语句**：`interactive_feedback_interactive-feedback-mcp`
-  ▹ **反馈处理逻辑**：
-    ```
-    Φ_feedback.parse(user_input) → 模式建议
-      if user_input.contains("修复|解决|实现|开始") → 触发◊₄执行模式
-      if user_input.contains("计划|方案|步骤|设计") → 触发◊₃计划模式
-      if user_input.contains("分析|研究|了解|检查") → 触发◊₁研究模式
-      if user_input.contains("创意|建议|想法|可能") → 触发◊₂创新模式
-      if user_input.contains("验证|审查|检验|确认") → 触发◊₅审查模式
-      if user_input.empty → 保持当前模式并总结当前进度
-    ```
-  
+
+  ▹ **标准化汇总模板 `interactive_feedback_summary`**:
+```
+🎯 当前状态: [模式][阶段] 
+✅ 已完成的工作
+[具体完成的任务列表，每项一行]
+- 任务1 - 简要描述完成情况
+- 任务2 - 简要描述完成情况
+- 任务3 - 简要描述完成情况
+📊 进度摘要: [已完成]/[总任务] - [完成率]%
+⚠️ 问题/阻塞: [具体问题描述] 或 "无"
+❓ 用户决策点: [需要用户确认/选择的具体事项] 或 "无"
+📋 建议选项:
+1) [选项1] - [详细说明和预期结果]
+2) [选项2] - [详细说明和预期结果]
+3) [选项3] - [详细说明和预期结果]
+4) [选项4] - [详细说明和预期结果]
+➡️ 推荐行动: [基于当前情况的最佳建议]
+```
+
 M₂ `context7-mcp`         — 解析大量交叉引用与历史上下文
-M₃ `sequential-thinking`  — 分解复杂问题与深度分析
-M₄ `playwright`           — E2E 测试脚本与网页抓取（存于 /tests/playwright/）
+M₃ `sequential-thinking`  — 只有在需要分解复杂问题与深度分析时使用
+M₄ `playwright`           — E2E 测试脚本与网页抓取（存于 memory-bank/tests/playwright/）
 M₅ `server-time`          — 返回时间戳 `YYYY-MM-DD HH:MM:SS`
 M₆ `cursor10x-mcp`        — 跨会话记忆与代码索引
 
@@ -199,8 +209,8 @@ S₆ 初始化内存文件 → 生成 □₁-□₆ [|✦3:内存模板] [|✦4:
 当用户未明确指定◊模式时，系统将根据用户输入的意图和当前项目上下文智能匹配最适合的模式： [|✦1:RIPER模式]
 - 🔍 表达探索、分析、了解、检查意图 → 触发[|◊₁:研究模式] [|✦1:T任务集]
 - 💡 表达创意、建议、想法、可能性意图 → 触发[|◊₂:创新模式] [|✦1:T任务集]
-- 📝 表达规划、步骤、方案、设计意图 → 触发[|◊₃:计划模式] [|✦1:T任务集]
-- ⚙️ 表达行为、执行、操作、修复、实现意图 → 触发[|◊₄:执行模式] [|✦1:T任务集]
+- 📝 表达规划、步骤、方案、设计等更大更复杂的意图 → 触发[|◊₃:计划模式] [|✦1:T任务集]
+- ⚙️ 表达行为、执行、操作、修复、实现比较简单容易实现的意图 → 触发[|◊₄:执行模式] [|✦1:T任务集]
 - 🔎 表达验证、审查、检验、确认意图 → 触发[|◊₅:审查模式] [|✦1:T任务集]
 
 **智能模式选择优先级**：
