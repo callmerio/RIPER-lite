@@ -22,16 +22,13 @@ RIPER Lite 是基于RIPER（**R**esearch、**I**nnovate、**P**lan、**E**xecute
 # 创建Cursor规则目录
 mkdir -p .cursor/rules/
 
-# 或者自定义rule 全局规则
-# 手动复制写入
-```
-```bash
 # 复制RIPER Lite框架文件
 cp RIPER.claude.md .cursor/rules/
 
 # 验证安装
 ls -la .cursor/rules/RIPER.claude.md
 ```
+或者手动复制写入自定义rule 全局规则
 
 ### 2. 项目初始化
 
