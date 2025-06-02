@@ -8,24 +8,62 @@ on:
 jobs:
   update-gist:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v3
 
+      - name: Check GIST_TOKEN
+        run: |
+          if [ -z "${{ secrets.GIST_TOKEN }}" ]; then
+            echo "❌ Error: GIST_TOKEN secret is not set!"
+            echo "📝 Please follow these steps:"
+            echo "1. Go to https://github.com/settings/tokens"
+            echo "2. Generate new token (classic) with 'gist' scope"
+            echo "3. Add it as repository secret named 'GIST_TOKEN'"
+            exit 1
+          else
+            echo "✅ GIST_TOKEN is configured"
+          fi
+
       - name: Update Gist
+        env:
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
         run: |
           FILE="RIPER.claude.md"
           GIST_ID="46e6ff19cd5a1e518e6515a6ebbff48b"
           GIST_FILENAME="RIPER.claude.md"
 
-          curl -X PATCH "https://api.github.com/gists/${GIST_ID}" \
-            -H "Authorization: token ${{ secrets.GIST_TOKEN }}" \
+          # Check if file exists
+          if [ ! -f "$FILE" ]; then
+            echo "❌ Error: File $FILE not found!"
+            exit 1
+          fi
+
+          echo "📄 Updating gist with file: $FILE"
+          echo "🔗 Gist ID: $GIST_ID"
+
+          # Read file content and properly escape for JSON
+          CONTENT=$(jq -Rs . < "$FILE")
+
+          # Create JSON payload
+          JSON_PAYLOAD=$(jq -n \
+            --arg filename "$GIST_FILENAME" \
+            --argjson content "$CONTENT" \
+            '{files: {($filename): {content: $content}}}')
+
+          # Update the gist
+          RESPONSE=$(curl -s -X PATCH "https://api.github.com/gists/${GIST_ID}" \
+            -H "Authorization: token $GIST_TOKEN" \
             -H "Content-Type: application/json" \
-            -d @- <<EOF
-          {
-            "files": {
-              "${GIST_FILENAME}": {
-                "content": "$(cat $FILE)"
-              }
-            }
-          }
-          EOF
+            -d "$JSON_PAYLOAD")
+
+          # Check if update was successful
+          if echo "$RESPONSE" | jq -e '.id' > /dev/null 2>&1; then
+            echo "✅ Gist updated successfully!"
+            echo "🔗 URL: $(echo "$RESPONSE" | jq -r '.html_url')"
+          else
+            echo "❌ Failed to update gist:"
+            echo "$RESPONSE" | jq .
+            exit 1
+          fi
