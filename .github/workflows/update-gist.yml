@@ -1,0 +1,31 @@
+name: Sync RIPER.claude.md to Gist
+
+on:
+  push:
+    paths:
+      - 'RIPER.claude.md'
+
+jobs:
+  update-gist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Update Gist
+        run: |
+          FILE="RIPER.claude.md"
+          GIST_ID="46e6ff19cd5a1e518e6515a6ebbff48b"
+          GIST_FILENAME="RIPER.claude.md"
+
+          curl -X PATCH "https://api.github.com/gists/${GIST_ID}" \
+            -H "Authorization: token ${{ secrets.GIST_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d @- <<EOF
+          {
+            "files": {
+              "${GIST_FILENAME}": {
+                "content": "$(cat $FILE)"
+              }
+            }
+          }
+          EOF
