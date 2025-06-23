@@ -8,6 +8,7 @@
 4. **用户为中心** - 明确用户需求，避免过度工程
 5. **质量优先** - 代码质量和用户体验并重
 6. **文档同步** - 重要决策和经验及时记录
+7. **任务驱动** - 执行过程中更新对应 task 以及 todo 任务 用任务驱动
 
 ## ⚡ RIPER 核心流程
 
@@ -152,7 +153,7 @@
 **集成流程**：
 
 ```
-任务分析 → 角色检测 → PromptX匹配 → 权重分配 → 智能激活 → 协作执行
+任务分析 → 角色检测 → PromptX匹配 → 权重分配 → 智能激活 → 更新对应 task 以及 todo 任务 → 协作执行
 ```
 
 **激活条件**：
@@ -422,20 +423,21 @@
 
 ```
 docs/memo/
-├── PROJECT-OVERVIEW.md     # 项目全景（简明扼要）
-├── TECH-DECISIONS.md       # 重要技术决策记录
-├── QUALITY-STANDARDS.md    # 质量标准和检查清单
-├── tasks/                  # 任务管理文档目录
-│   └── TASKS-MAIN.md      # 主任务清单
+├── 1-OVERVIEW.md           # 项目全景（2000字内）
+├── 2-CODEBASE.md           # 技术实现详解（模块化500字/模块）
+├── 3-ROADMAP.md            # 发展路线图（季度规划）
+├── 4-QUALITY.md            # 质量保障体系（可量化标准）
+├── tasks.md                # 任务管理文档
 └── logs/                   # 执行记录目录
 ```
 
 ### 📝 核心文件模板
 
-**PROJECT-OVERVIEW.md**：项目基本信息、目标、技术栈概览
-**TECH-DECISIONS.md**：重大技术选型、架构决策的记录
-**QUALITY-STANDARDS.md**：代码质量标准、测试要求、评审流程
-**TASKS-MAIN.md**：任务定义、状态跟踪、依赖关系管理
+**1-OVERVIEW.md**：项目全景（2000 字内）- 项目基本信息、目标、技术栈概览
+**2-CODEBASE.md**：技术实现详解（模块化 500 字/模块）- 代码结构、模块设计、API 文档
+**3-ROADMAP.md**：发展路线图（季度规划）- 功能规划、里程碑、版本计划
+**4-QUALITY.md**：质量保障体系（可量化标准）- 代码质量标准、测试要求、评审流程
+**tasks.md**：任务定义、状态跟踪、依赖关系管理
 
 ### ⚡ PromptX 系统激活
 
@@ -464,7 +466,7 @@ docs/memo/
 
 ```
 必须字段：
-- id: 任务唯一标识（支持多层级：1.1.2）
+- id: 任务唯一标识
 - title: 简明任务标题
 - status: 当前状态
 - priority: 优先级别
@@ -476,6 +478,23 @@ docs/memo/
 - estimated_hours: 预估工时
 - assignee: 负责角色
 - doc: 参考文档路径
+```
+
+tasks 下面维护 todo 任务
+
+```
+ Update Todos
+    ⎿  ☒ 安全漏洞扫描和评估 - 运行完整的安全扫描，分析所有11个已知漏洞
+       ☒ 关键依赖升级 - 升级loader-utils, json5, esbuild, webpack-dev-server,
+  follow-redirects
+       ☒ 安全扫描CI流程建立 - 配置GitHub Actions安全检查和Dependabot
+       ☒ 漏洞修复验证 - 验证所有安全漏洞修复完成并通过扫描
+       ☒ TypeScript配置升级 - 启用strict模式和相关严格检查
+       ☐ 核心类型定义完善 - 为aiEngine, providers, utils添加完整类型
+       ☐ 编译错误修复 - 解决所有TypeScript strict模式编译错误
+       ☐ 阶段1验收测试 - 确保所有功能正常，无回归问题
+       ☐ 基础测试框架优化 - 增强Jest配置，添加测试工具
+       ☐ 代码质量工具配置 - 配置ESLint, Prettier, Husky pre-commit hooks
 ```
 
 #### 状态和优先级约束
@@ -578,10 +597,11 @@ docs/memo/
 
 ```
 docs/memo/
-├── PROJECT-OVERVIEW.md - 项目全景（简明扼要）
-├── TECH-DECISIONS.md - 重要技术决策记录
-├── QUALITY-STANDARDS.md - 质量标准和检查清单
-└── tasks/ - 任务管理文档目录
+├── 1-OVERVIEW.md - 项目全景（2000字内）
+├── 2-CODEBASE.md - 技术实现详解（模块化500字/模块）
+├── 3-ROADMAP.md - 发展路线图（季度规划）
+├── 4-QUALITY.md - 质量保障体系（可量化标准）
+└── tasks.md - 任务管理文档
 ```
 
 #### 任务执行记录
