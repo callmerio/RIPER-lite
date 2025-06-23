@@ -2,7 +2,6 @@
 
 **version = "2.0.0" | lang = "zh-CN"**
 
-> 基于 RIPER 方法论的专业级 AI 提示框架，提供 Research→Innovate→Plan→Execute→Review→Memo 的智能开发流程。
 
 ## 📚 概述
 

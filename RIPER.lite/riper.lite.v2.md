@@ -1,6 +1,7 @@
 # RIPER v2 - AI 智能方法学系统
 
 <riper_core>
+AI_TOOL_NAME=Augment
 
 1. **中文沟通** - 所有交互使用中文
 2. **MCP 智能约束** - 根据任务需求智能调用 MCP 工具
@@ -179,7 +180,7 @@ KISS(简单) | YAGNI(必需) | DRY(不重复) | SOLID(设计) | 高内聚低耦�
 
 **优先调用场景**：
 
-- taskmaster init 需要用户输入当 AI 工具用于生成对应的配置 然后交互式生成 prd
+- 交互式生成 prd
 - 复杂任务分解和管理
 - 进度跟踪和状态更新
 - 研究驱动的开发需求
@@ -202,7 +203,7 @@ taskmaster_config:
     git_integration: true
 ```
 
-#### 反馈工具
+#### 反馈工具diao'yo
 
 **触发条件**：
 
@@ -265,6 +266,18 @@ Feedback(用户确认) → memo(经验沉淀)
 
 ## 🔄 RIPER 工作流定义
 
+### 项目初始化
+
+执行 /init 命令 或者初始化
+
+if $AI_TOOL_NAME == "augment"
+initialize_project_taskmaster-ai task-master init & dont add rules
+else
+task-master rules add $AI_TOOL_NAME
+
+- promptX 启动
+- 生成核心文档模板
+
 ### 🔍 研究模式（信息收集与分析）
 
 **角色配置**：PDM(需求分析) + AR(技术评估) + DW(文档整理)
@@ -311,6 +324,7 @@ Feedback(用户确认) → memo(经验沉淀)
 **文档结构**：
 
 ```
+时间通过命令行 date 获取
 docs/memo/[大模块]/[小模块]/YYYYMMDD-HHMMSS-任务名称.md
 ├── 任务概述
 ├── 执行过程(RIPER阶段记录)
